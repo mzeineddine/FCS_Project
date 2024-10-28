@@ -32,41 +32,58 @@ class DeliveryCompany:
         name = input("Enter Driver Name: ")
         sCity = input("Enter Driver Start City: ")
         sCity = sCity.capitalize()
-        if sCity in availableCities:
-            if len(drivers) > 0:
-                idNB = int(drivers[-1].ID[2:]) + 1
-                id = f"ID{idNB}"
-            else:
-                id = "ID1"
-            drivers.append(Driver(id, name, sCity))
+        
+        if len(drivers) > 0:
+            idNB = int(drivers[-1].ID[2:]) + 1
+            id = f"ID{idNB}"
         else:
+            id = "ID1"
+        
+        if sCity not in availableCities:
             result = input("If you wnat to add this city to dataBase type YES: ")
             result = result.upper()
             if result == "YES":
                 availableCities.append(sCity)
-                print(availableCities)
-            else:
-                start(self)
+                drivers.append(Driver(id, name, sCity))
+                # print(availableCities)
+        else:
+            drivers.append(Driver(id, name, sCity))
+        start(self)
+            
         
 def viewAllDrivers(deliveryCompany):
     # print(deliveryCompany.drivers[0].name)
     for driver in deliveryCompany.drivers:
         driver.displayDriver()
+    start(deliveryCompany)
 
 def addDriver(deliveryCompany):
     deliveryCompany.addDriver()
+    start(deliveryCompany)
 
 def getDriverName(driver):
     return driver.startCity
 
 def checkSimilarDriver(deliveryCompany):
     deliveryCompany.drivers.sort(key = getDriverName)
-    for city in availableCities:
-        print(city, end = ": ")
-        for driver in deliveryCompany.drivers:
-            if driver.startCity == city:
-                print(driver.name, end = ", ")    
-        print("")
+    city = deliveryCompany.drivers[0].startCity
+    print(city, end = ": ")
+    for driver in deliveryCompany.drivers:
+        if driver.startCity == city:
+            print(driver.name, end = ", ")
+        else:
+            city = driver.startCity
+            print("\n"+city, end = ": ")
+            print(driver.name, end = ", ")
+    print()
+
+    # for city in availableCities:
+    #     print(city, end = ": ")
+    #     for driver in deliveryCompany.drivers:
+    #         if driver.startCity == city:
+    #             print(driver.name, end = ", ")    
+    #     print("")
+    start(deliveryCompany)
 
 def driverMenu(deliveryCompany):
     print("Enter: ")
