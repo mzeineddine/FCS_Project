@@ -1,23 +1,4 @@
-# We Deliver: A system for a delivery company 
-# In your system, you should keep track of two things:  
-availableCities = [
-    "Beirut",
-    "Tripoli",
-    "Sidon",
-    "Tyre",
-    "Byblos",
-    "Baalbek",
-    "Zahle",
-    "Jounieh",
-    "Batroun",
-    "Nabatieh",
-    "Aley",
-    "Halba",
-    "Amioun",
-    "Akkar"
-]
-
-
+availableCities = ["Beirut", "Tripoli", "Sidon", "Tyre", "Byblos", "Baalbek", "Zahle", "Jounieh", "Batroun", "Nabatieh", "Aley", "Halba", "Amioun", "Akkar"]
 class Node:
     def __init__(self,info,n):
         self.info=info
@@ -77,7 +58,6 @@ class Graph:
     def add_edge(self,n1,n2):#O(1)
         self.list[n1].addToHead(self.cities[n2])
         self.list[n2].addToHead(self.cities[n1])
-
         
     def print_graph(self): #O(v^2)
         for i in self.list: #O(v)
@@ -90,30 +70,29 @@ class Graph:
     def get_neighbors(self, n1):
         return self.list[n1].linkedListToList()
 
-# 1. The drivers that the company has, their worker ID, their name, and their start city. 
 class Driver:
-
     def __init__(self, id, name, sCity):
         self.name = name
         self.ID = id
         self.startCity = sCity
     def displayDriver(self):
         print(self.ID, "\t",self.name, "\t", self.startCity)
-# 2. The cities that the company delivers to and where the driver can go from that city.
+
 class DeliveryCompany:
-    def __init__(self, drivers, citiesList):
+    def __init__(self, drivers = [], citiesList = []):
         self.drivers = drivers
         self.avCity = citiesList
         self.graph = Graph(self.avCity)
 
     def addCity(self, city):
+        city = city.capitalize()
         self.avCity.append(city)
         self.graph.list.append(LinkedList())
-        r = input("Does the entered city has neighbor(YES):")
+        r = input("Does the entered city has neighbor(YES): ")
         r = r.upper()
         if r == "YES":
             while(1):
-                c1 = input("Enter the neighbor city:")
+                c1 = input("Enter the neighbor city: ")
                 c1 = c1.capitalize()
                 if c1 in self.avCity:
                     self.graph.add_edge(self.avCity.index(city), self.avCity.index(c1))
@@ -129,8 +108,8 @@ class DeliveryCompany:
         sCity = input("Enter Driver Start City: ")
         sCity = sCity.capitalize()
         
-        if len(drivers) > 0:
-            idNB = int(drivers[-1].ID[2:]) + 1
+        if len(self.drivers) > 0:
+            idNB = int(self.drivers[-1].ID[2:]) + 1
             id = f"ID{idNB}"
         else:
             id = "ID1"
@@ -140,12 +119,11 @@ class DeliveryCompany:
             result = result.upper()
             if result == "YES":
                 self.addCity(sCity)
-                drivers.append(Driver(id, name, sCity))
+                self.drivers.append(Driver(id, name, sCity))
         else:
-            drivers.append(Driver(id, name, sCity))            
+            self.drivers.append(Driver(id, name, sCity))            
         
 def viewAllDrivers(deliveryCompany):
-    # print(deliveryCompany.drivers[0].name)
     for driver in deliveryCompany.drivers:
         driver.displayDriver()
 
@@ -168,9 +146,6 @@ def checkSimilarDriver(deliveryCompany):
             print(driver.name, end = ", ")
     print()
 
-
-
-
 def driverMenu(deliveryCompany):
     print("Enter: ")
     print("\t 1. To view all the drivers ")
@@ -189,13 +164,12 @@ def driverMenu(deliveryCompany):
     else:
         print("Invalid input")
 
-
 def showCities(deliveryCompany):
     cities = sorted(deliveryCompany.avCity, reverse=True)
     print("Available Cities: ", end = "")
     for city in cities:
         print(city, end = ", ")
-
+    print
 
 def searchCity(deliveryCompany):
     s = input("Search a city: ")
@@ -210,7 +184,6 @@ def printNeighboringCities(deliveryCompany):
         deliveryCompany.graph.print_neighbors(deliveryCompany.avCity.index(city))
     else:
         print("The entered city is not available")
-
 
 def getAllCityNeighbor(deliveryCompany, city, s = []):
     l = deliveryCompany.graph.get_neighbors(deliveryCompany.avCity.index(city))
@@ -247,20 +220,28 @@ def cityMenu(deliveryCompany):
         printDriversDeliveringToCity(deliveryCompany)
     else:
         print("Invalid input")
+  
+# drivers = []
+# drivers.append(Driver("ID1", "Max Verstappen", "Tyre"))
+# drivers.append(Driver("ID2", "Charles Leclerc", "Batroun"))
+# drivers.append(Driver("ID3", "Lando Norris", "Batroun"))
 
-    
-drivers = []
-drivers.append(Driver("ID1", "Max Verstappen", "Tyre"))
-drivers.append(Driver("ID2", "Charles Leclerc", "Batroun"))
-drivers.append(Driver("ID3", "Lando Norris", "Batroun"))
-
-deliveryCompany = DeliveryCompany(drivers, availableCities)
+deliveryCompany = DeliveryCompany()
 # g = Graph(DC.avCity)
 # g.add_edge(availableCities.index("Akkar"),availableCities.index("Byblos"))
 # g.add_edge(availableCities.index("Beirut"), availableCities.index("Byblos"))
 # g.add_edge(availableCities.index("Sidon"), availableCities.index("Zahle"))
 
 availableCities.sort(reverse=True)
+nbC = int(input("Enter the number of cities to add: "))
+for i in range(nbC):
+    city = input("Enter the city to add: ")
+    deliveryCompany.addCity(city)
+
+nbD = int(input("Enter the number of drivers to add: "))
+for i in range(nbD):
+    deliveryCompany.addDriver()
+
 print("Hello!", end = " ")
 while(1):
     print("Please enter:")
