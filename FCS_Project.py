@@ -113,15 +113,18 @@ class DeliveryCompany:
             id = f"ID{idNB}"
         else:
             id = "ID1"
-        
         if sCity not in self.avCity:
             result = input("If you wnat to add this city to dataBase type YES: ")
             result = result.upper()
             if result == "YES":
                 self.addCity(sCity)
                 self.drivers.append(Driver(id, name, sCity))
+                return True
+            else:
+                return False
         else:
-            self.drivers.append(Driver(id, name, sCity))            
+            self.drivers.append(Driver(id, name, sCity))  
+            return True          
         
 def viewAllDrivers(deliveryCompany):
     for driver in deliveryCompany.drivers:
@@ -169,7 +172,7 @@ def showCities(deliveryCompany):
     print("Available Cities: ", end = "")
     for city in cities:
         print(city, end = ", ")
-    print
+    print()
 
 def searchCity(deliveryCompany):
     s = input("Search a city: ")
@@ -177,9 +180,11 @@ def searchCity(deliveryCompany):
     for city in deliveryCompany.avCity:
         if city.__contains__(s):
             print(city, end = ", ")
+    print()
 
 def printNeighboringCities(deliveryCompany):
     city = input("Enter City Name: ")
+    city = city.capitalize()
     if city in deliveryCompany.avCity:
         deliveryCompany.graph.print_neighbors(deliveryCompany.avCity.index(city))
     else:
@@ -197,11 +202,12 @@ def getAllCityNeighbor(deliveryCompany, city, s = []):
 def printDriversDeliveringToCity(deliveryCompany):
     city = input("Enter the city you want get delivered in: ")
     city = city.capitalize()
-    c = getAllCityNeighbor(deliveryCompany, city)
     if city in deliveryCompany.avCity:
-        for driver in deliveryCompany.drivers:
-            if driver.startCity in c:
-                driver.displayDriver()
+        c = getAllCityNeighbor(deliveryCompany, city)
+        if city in deliveryCompany.avCity:
+            for driver in deliveryCompany.drivers:
+                if driver.startCity in c:
+                    driver.displayDriver()
 
 def cityMenu(deliveryCompany):
     print("Enter: ")
@@ -239,8 +245,10 @@ for i in range(nbC):
     deliveryCompany.addCity(city)
 
 nbD = int(input("Enter the number of drivers to add: "))
-for i in range(nbD):
-    deliveryCompany.addDriver()
+i = 0
+while i < nbD:
+    if(deliveryCompany.addDriver()):
+        i += 1
 
 print("Hello!", end = " ")
 while(1):
