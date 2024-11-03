@@ -1,9 +1,13 @@
+# predefined lebanese cities:
 availableCities = ["Beirut", "Tripoli", "Sidon", "Tyre", "Byblos", "Baalbek", "Zahle", "Jounieh", "Batroun", "Nabatieh", "Aley", "Halba", "Amioun", "Akkar"]
+
+# Node class to represent cities in
 class Node:
     def __init__(self,info,n):
         self.info=info
         self.next=n
 
+# LinkedList class to represent the neighbors of a city
 class LinkedList:
     def __init__(self):
         self.head=None
@@ -39,7 +43,7 @@ class LinkedList:
             print(" -> ",temp.info,end=" ")
             temp=temp.next
         print()
-
+    # turn linkedList into a list
     def linkedListToList(self):
         temp=self.head
         list1 = []
@@ -48,28 +52,30 @@ class LinkedList:
             temp=temp.next
         return list1
 
+# Graph class to reprsent the connection between cities using LinkedList
 class Graph:
     def __init__(self,list1):
         self.list=[]
         self.cities = list1
         for i in range(len(self.cities)):
             self.list.append(LinkedList())
-            
-    def add_edge(self,n1,n2):#O(1)
+    # add connection between 2 cities using index
+    def add_edge(self,n1,n2):
         self.list[n1].addToHead(self.cities[n2])
         self.list[n2].addToHead(self.cities[n1])
-        
-    def print_graph(self): #O(v^2)
-        for i in self.list: #O(v)
-            i.printLL() #O(v)
-
+    # print the neighbors of each city
+    def print_graph(self):
+        for i in self.list:
+            i.printLL()
+    # print the neighbors of a given city
     def print_neighbors(self, n1):
         print(f"{self.cities[n1]}:",end=" ")
         self.list[n1].printLL()
-    
+    # fetch city neighbors by index
     def get_neighbors(self, n1):
         return self.list[n1].linkedListToList()
 
+# Driver class to reprsent the driver data
 class Driver:
     def __init__(self, id, name, sCity):
         self.name = name
@@ -78,12 +84,13 @@ class Driver:
     def displayDriver(self):
         print(self.ID, "\t",self.name, "\t", self.startCity)
 
+# DeliveryCompany class to represnt the company itself and all its components and functionality using predefined class
 class DeliveryCompany:
     def __init__(self, drivers = [], citiesList = []):
         self.drivers = drivers
         self.avCity = citiesList
         self.graph = Graph(self.avCity)
-
+    # add a city to the company cities list by adding it to the graph and add its neighbors in the linkedlist of the graph
     def addCity(self, city):
         city = city.capitalize()
         self.avCity.append(city)
@@ -102,7 +109,7 @@ class DeliveryCompany:
                 c = c.upper()
                 if c != "YES":
                     break
-
+    # add a driver to the driver list
     def addDriver(self):
         name = input("Enter Driver Name: ")
         sCity = input("Enter Driver Start City: ")
@@ -135,7 +142,7 @@ def addDriver(deliveryCompany):
 
 def getDriverName(driver):
     return driver.startCity
-
+# print all drivers as the all drivers of the same start city are printed on the same line
 def checkSimilarDriver(deliveryCompany):
     deliveryCompany.drivers.sort(key = getDriverName)
     city = deliveryCompany.drivers[0].startCity
@@ -189,7 +196,7 @@ def printNeighboringCities(deliveryCompany):
         deliveryCompany.graph.print_neighbors(deliveryCompany.avCity.index(city))
     else:
         print("The entered city is not available")
-
+# get all neighbor cities using DFS
 def getAllCityNeighbor(deliveryCompany, city, s = []):
     l = deliveryCompany.graph.get_neighbors(deliveryCompany.avCity.index(city))
     l = list(set(l) - set(s))
@@ -198,7 +205,7 @@ def getAllCityNeighbor(deliveryCompany, city, s = []):
         for c in l:
             getAllCityNeighbor(deliveryCompany, c, s)
     return s
-
+# fetch all cities that are reachable from the destination city and check driver that have the start city in the fetched cities
 def printDriversDeliveringToCity(deliveryCompany):
     city = input("Enter the city you want get delivered in: ")
     city = city.capitalize()
@@ -226,24 +233,28 @@ def cityMenu(deliveryCompany):
         printDriversDeliveringToCity(deliveryCompany)
     else:
         print("Invalid input")
-  
+
+#   Main:-----------------------------------------------------------------------------------------------------
+# predefined drivers
 # drivers = []
 # drivers.append(Driver("ID1", "Max Verstappen", "Tyre"))
 # drivers.append(Driver("ID2", "Charles Leclerc", "Batroun"))
 # drivers.append(Driver("ID3", "Lando Norris", "Batroun"))
 
 deliveryCompany = DeliveryCompany()
+# predefined graph
 # g = Graph(DC.avCity)
 # g.add_edge(availableCities.index("Akkar"),availableCities.index("Byblos"))
 # g.add_edge(availableCities.index("Beirut"), availableCities.index("Byblos"))
 # g.add_edge(availableCities.index("Sidon"), availableCities.index("Zahle"))
 
+# promet to enter the nb of cities and add them
 availableCities.sort(reverse=True)
 nbC = int(input("Enter the number of cities to add: "))
 for i in range(nbC):
     city = input("Enter the city to add: ")
     deliveryCompany.addCity(city)
-
+# promet to enter the nb of drivers and add them
 nbD = int(input("Enter the number of drivers to add: "))
 i = 0
 while i < nbD:
